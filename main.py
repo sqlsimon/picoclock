@@ -23,6 +23,7 @@ DEBOUNCE_DELAY = 500
 
 DEFAULT_CLOCK_FREQUENCY = 1 # Frequency in Hz
 DEFAULT_CLOCK_MULTIPLIER = 1 # Multiplier for PWM frequency
+MAXIMUM_PWM_FREQUENCY = 127_000_000 # Maximum PWM frequency in Hz
 
 
 class PicoClock:
@@ -81,6 +82,11 @@ class PicoClock:
                     self.onboard_led.off()
             elif str(PIN_BUTTON_CYCLE) in str(pin):
                 if debug: print("Cycle button pressed")
+                frequency = self.clock_frequency * DEFAULT_CLOCK_MULTIPLIER
+                if frequency > MAXIMUM_PWM_FREQUENCY:
+                    self.display.show("Err ")
+                    sleep(3)
+                    return
                 if self.clock_running:
                     if debug: print("Can't cycle while clock is running")
                 else:
@@ -92,6 +98,11 @@ class PicoClock:
                     self.display.number(self.clock_frequency)
             elif str(PIN_BUTTON_SHIFT) in str(pin):
                 if debug: print("Shift button pressed")
+                frequency = self.clock_frequency * DEFAULT_CLOCK_MULTIPLIER
+                if frequency > MAXIMUM_PWM_FREQUENCY:
+                    self.display.show("Err ")
+                    sleep(3)
+                    return
                 if self.clock_running:
                     if debug: print("Can't shift while clock is running")
                 else:
@@ -104,6 +115,10 @@ class PicoClock:
                     if debug: print("Can't set while clock is running")
                 else:
                     frequency = self.clock_frequency * DEFAULT_CLOCK_MULTIPLIER
+                    if frequency > MAXIMUM_PWM_FREQUENCY:
+                        self.display.show("Err ")
+                        sleep(3)
+                        return
                     if frequency < 10:
                         self.pwm_clock = Pin(PIN_CLOCK, Pin.OUT)
                         self.clock_timer = Timer()
@@ -123,6 +138,10 @@ class PicoClock:
                     if debug: print("Clock started")
                     self.clock_running = True
                     frequency = self.clock_frequency * DEFAULT_CLOCK_MULTIPLIER
+                    if frequency > MAXIMUM_PWM_FREQUENCY:
+                        self.display.show("Err ")
+                        sleep(3)
+                        return
                     if frequency < 10:
                         self.pwm_clock = Pin(PIN_CLOCK, Pin.OUT)
                         self.clock_timer = Timer()
