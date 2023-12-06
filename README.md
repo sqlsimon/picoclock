@@ -93,3 +93,6 @@ In order to connect picoclock to a 6502 board, that does not already have a cloc
 This project is not up to par with others built by much more experienced people out there. It is something that works for me and that I wanted to share.
 
 It is also expensive compared to other square wave generators you can build or buy. I always use these kind of projects to learn something.
+
+# License
+This work is licensed under the MIT License.
