@@ -3,6 +3,10 @@ import utime
 from time import sleep
 import digits.tm1637
 
+version__ = "0.1.0"
+debug= True  # Set to False to disable debug messages via the serial port
+
+# GPIO pin mapping
 PIN_CLOCK = 0
 PIN_BUTTON_RESET = 16
 PIN_BUTTON_CYCLE = 17
@@ -14,13 +18,18 @@ PIN_LED = 25
 PIN_DISPLAY_CLK = 2
 PIN_DISPLAY_DIO = 3
 
+# Debounce delay in milliseconds
 DEBOUNCE_DELAY = 500
+
+DEFAULT_CLOCK_FREQUENCY = 1 # Frequency in Hz
+DEFAULT_CLOCK_MULTIPLIER = 1 # Multiplier for PWM frequency
 
 
 class PicoClock:
     last_time = 0
     new_time = 0
-    clock_frequency = 1
+    clock_frequency = DEFAULT_CLOCK_FREQUENCY
+    clock_multiplier = DEFAULT_CLOCK_MULTIPLIER
     clock_running = False
     clock_timer = None
     pwm_clock = None
@@ -31,7 +40,6 @@ class PicoClock:
         None, None, None, None, None, None
 
     def __init__(self):
-        print("PicoClock.__init__()")
         # Initialize Pico GPIO pins
         self.pwm_clock = Pin(PIN_CLOCK, Pin.OUT)
         self.button_reset = Pin(PIN_BUTTON_RESET, Pin.IN, Pin.PULL_DOWN)
@@ -61,73 +69,73 @@ class PicoClock:
         self.new_time = utime.ticks_ms()
         if (self.new_time - self.last_time) > DEBOUNCE_DELAY:
             if str(PIN_BUTTON_RESET) in str(pin):
+                if debug: print("Reset button pressed")
                 if self.clock_running:
-                    print("Can't reset while clock is running")
+                    if debug: print("Can't reset while clock is running")
                 else:
-                    print("Reset button pressed")
                     self.clock_running = False
-                    self.clock_frequency = 1
+                    self.clock_frequency = DEFAULT_CLOCK_FREQUENCY
                     self.display.show("Rst ")
                     sleep(2)
                     self.display.number(self.clock_frequency)
                     self.onboard_led.off()
-                    print("Clock frequency set to " + str(self.clock_frequency) + " Hz")
             elif str(PIN_BUTTON_CYCLE) in str(pin):
+                if debug: print("Cycle button pressed")
                 if self.clock_running:
-                    print("Can't cycle while clock is running")
+                    if debug: print("Can't cycle while clock is running")
                 else:
-                    print("Cycle button pressed")
                     digit = int(str(self.clock_frequency)[-1])
                     digit += 1
                     if digit >= 10:
                         digit = 1
                     self.clock_frequency = int(str(self.clock_frequency)[:-1] + str(digit))
                     self.display.number(self.clock_frequency)
-                    print("Clock frequency set to " + str(self.clock_frequency) + " Hz")
             elif str(PIN_BUTTON_SHIFT) in str(pin):
+                if debug: print("Shift button pressed")
                 if self.clock_running:
-                    print("Can't shift while clock is running")
+                    if debug: print("Can't shift while clock is running")
                 else:
-                    print("Shift button pressed")
                     if not self.clock_frequency > 999:
                         self.clock_frequency *= 10
                     self.display.number(self.clock_frequency)
-                    print("Clock frequency set to " + str(self.clock_frequency) + " Hz")
             elif str(PIN_BUTTON_SET) in str(pin):
+                if debug: print("Set button pressed")
                 if self.clock_running:
-                    print("Can't set while clock is running")
+                    if debug: print("Can't set while clock is running")
                 else:
-                    if self.clock_frequency < 10:
+                    frequency = self.clock_frequency * DEFAULT_CLOCK_MULTIPLIER
+                    if frequency < 10:
                         self.pwm_clock = Pin(PIN_CLOCK, Pin.OUT)
                         self.clock_timer = Timer()
-                        self.clock_timer.init(freq=self.clock_frequency, mode=Timer.PERIODIC, callback=self.non_pwm_clock)
+                        self.clock_timer.init(freq=frequency, mode=Timer.PERIODIC, callback=self.non_pwm_clock)
                     else:
                         self.pwm_clock = PWM(Pin(PIN_CLOCK))
-                        self.pwm_clock.freq(self.clock_frequency)
+                        self.pwm_clock.freq(frequency)
                         self.pwm_clock.duty_u16(32512)
                     self.onboard_led.on()
                     self.clock_running = True
                     self.display.show("Run ")
                     sleep(2)
-                    print("Clock starting with frequency " + str(self.clock_frequency) + " Hz")
                 print("Set button pressed")
             elif str(PIN_BUTTON_START_STOP) in str(pin):
-                print("Start/Stop button pressed")
+                if debug: print("Start/Stop button pressed")
                 if not self.clock_running:
+                    if debug: print("Clock started")
                     self.clock_running = True
-                    if self.clock_frequency < 10:
+                    frequency = self.clock_frequency * DEFAULT_CLOCK_MULTIPLIER
+                    if frequency < 10:
                         self.pwm_clock = Pin(PIN_CLOCK, Pin.OUT)
                         self.clock_timer = Timer()
-                        self.clock_timer.init(freq=self.clock_frequency, mode=Timer.PERIODIC, callback=self.non_pwm_clock)
+                        self.clock_timer.init(freq=frequency, mode=Timer.PERIODIC, callback=self.non_pwm_clock)
                     else:
                         self.pwm_clock = PWM(Pin(PIN_CLOCK))
-                        self.pwm_clock.freq(self.clock_frequency)
+                        self.pwm_clock.freq(frequency)
                         self.pwm_clock.duty_u16(32512)
                     self.onboard_led.on()
                     self.display.show("Run ")
                     sleep(2)
                 else:
-                    print("Clock stopped")
+                    if debug: print("Clock stopped")
                     self.clock_running = False
                     if self.clock_frequency < 10:
                         self.clock_timer.deinit()
@@ -140,9 +148,9 @@ class PicoClock:
                     sleep(2)
                     self.display.number(self.clock_frequency)
             elif str(PIN_BUTTON_PULSE) in str(pin):
-                print("Pulse button pressed")
+                if debug: print("Pulse button pressed")
                 if self.clock_running:
-                    print("Can't pulse while clock is running")
+                    if debug: print("Can't pulse while clock is running")
                 else:
                     half_period_us = int(1_000_000 / self.clock_frequency / 2)
                     self.pwm_clock.on()
