@@ -83,6 +83,11 @@ Just upload the project to your Raspberry Pico, and you will be ready.
 
 While writing the software, I discovered that the Pico PWM can not generate frequencies below 8 Hz. This is why I had to use PWM for frequencies greater than 10 Hz and a Timer for frequencies below or equal to 10 Hz.  Interestingly enough, I did not have the same problem using a Raspberry Pi Model 3b.
 
+# Connecting to the 6502 microprocessor
+In order to connect picoclock to a 6502 board, that does not already have a clock, you need to follow two simple steps:
+- Connect the Raspberry Pi Pico GP0 pin to the 6502 PHI2 pin. (PHI2 pin is pin 37 on the 6502 microprocessor)
+- Connect picoclock ground to the 6502 ground.
+
 # Final words
 
 This project is not up to par with others built by much more experienced people out there. It is something that works for me and that I wanted to share.
