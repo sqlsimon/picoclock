@@ -1,7 +1,9 @@
-from machine import Pin, Timer, PWM
+from machine import Pin, Timer, PWM, I2C
 import utime
 from time import sleep
-import digits.tm1637
+from rotary_irq_rp2 import RotaryIRQ
+from ssd1306 import SSD1306_I2C
+import framebuf,sys
 
 version__ = "0.1.0"
 debug= True  # Set to False to disable debug messages via the serial port
@@ -26,6 +28,8 @@ DEFAULT_CLOCK_MULTIPLIER = 1 # Multiplier for PWM frequency
 MAXIMUM_PWM_FREQUENCY = 127_000_000 # Maximum PWM frequency in Hz
 
 
+
+
 class PicoClock:
     last_time = 0
     new_time = 0
@@ -39,6 +43,8 @@ class PicoClock:
 
     button_reset, button_cycle, button_shift, button_set, button_start_stop, button_pulse = \
         None, None, None, None, None, None
+
+ 
 
     def __init__(self):
         # Initialize Pico GPIO pins
@@ -59,13 +65,32 @@ class PicoClock:
         self.button_start_stop.irq(trigger=Pin.IRQ_RISING, handler=self.button_pressed_handler)
         self.button_pulse.irq(trigger=Pin.IRQ_RISING, handler=self.button_pressed_handler)
 
-        # Initialize Display
-        self.display = digits.tm1637.TM1637(clk=Pin(PIN_DISPLAY_CLK), dio=Pin(PIN_DISPLAY_DIO))
-        self.display.brightness(3)
-        self.display.show("Helo")
         sleep(3)
-        self.display.number(self.clock_frequency)
+        
+        # Initialize SSD1306 Display
+        pix_res_x  = 128 # SSD1306 horizontal resolution
+        pix_res_y  = 32  # SSD1306 vertical resolution
 
+        i2c_dev = I2C(1,scl=Pin(27),sda=Pin(26),freq=200000)  # start I2C on I2C1 (GPIO 26/27)
+        i2c_addr = [hex(ii) for ii in i2c_dev.scan()] # get I2C address in hex format
+        
+        # i2c address = 0x3c
+        
+        if i2c_addr==[]:
+            if debug: print('No I2C Display Found') 
+            sys.exit() # exit routine if no dev found
+        else:
+            if debug: print("I2C Address      : {}".format(i2c_addr[0])) # I2C device address
+            if debug: print("I2C Configuration: {}".format(i2c_dev)) # print I2C params
+
+        self.oled = SSD1306_I2C(pix_res_x, pix_res_y, i2c_dev) # oled controller
+        
+        self.show_message("Pico Clock V1.0")
+        
+
+        
+
+  
     def button_pressed_handler(self, pin):
         self.new_time = utime.ticks_ms()
         if (self.new_time - self.last_time) > DEBOUNCE_DELAY:
@@ -76,15 +101,14 @@ class PicoClock:
                 else:
                     self.clock_running = False
                     self.clock_frequency = DEFAULT_CLOCK_FREQUENCY
-                    self.display.show("Rst ")
+                    self.show_message("Reset")
                     sleep(2)
-                    self.display.number(self.clock_frequency)
                     self.onboard_led.off()
             elif str(PIN_BUTTON_CYCLE) in str(pin):
                 if debug: print("Cycle button pressed")
                 frequency = self.clock_frequency * DEFAULT_CLOCK_MULTIPLIER
                 if frequency > MAXIMUM_PWM_FREQUENCY:
-                    self.display.show("Err ")
+                    self.show_message("Error")
                     sleep(3)
                     return
                 if self.clock_running:
@@ -95,12 +119,12 @@ class PicoClock:
                     if digit >= 10:
                         digit = 1
                     self.clock_frequency = int(str(self.clock_frequency)[:-1] + str(digit))
-                    self.display.number(self.clock_frequency)
+                    self.show_message("Cycle")
             elif str(PIN_BUTTON_SHIFT) in str(pin):
                 if debug: print("Shift button pressed")
                 frequency = self.clock_frequency * DEFAULT_CLOCK_MULTIPLIER
                 if frequency > MAXIMUM_PWM_FREQUENCY:
-                    self.display.show("Err ")
+                    self.show_message("Error freq exceeded")
                     sleep(3)
                     return
                 if self.clock_running:
@@ -108,7 +132,7 @@ class PicoClock:
                 else:
                     if not self.clock_frequency > 999:
                         self.clock_frequency *= 10
-                    self.display.number(self.clock_frequency)
+                    self.show_message("Frequency Changed")
             elif str(PIN_BUTTON_SET) in str(pin):
                 if debug: print("Set button pressed")
                 if self.clock_running:
@@ -116,7 +140,7 @@ class PicoClock:
                 else:
                     frequency = self.clock_frequency * DEFAULT_CLOCK_MULTIPLIER
                     if frequency > MAXIMUM_PWM_FREQUENCY:
-                        self.display.show("Err ")
+                        self.show_message("Error")
                         sleep(3)
                         return
                     if frequency < 10:
@@ -129,7 +153,7 @@ class PicoClock:
                         self.pwm_clock.duty_u16(32512)
                     self.onboard_led.on()
                     self.clock_running = True
-                    self.display.show("Run ")
+                    self.show_message("Clock Run")
                     sleep(2)
                 print("Set button pressed")
             elif str(PIN_BUTTON_START_STOP) in str(pin):
@@ -139,7 +163,7 @@ class PicoClock:
                     self.clock_running = True
                     frequency = self.clock_frequency * DEFAULT_CLOCK_MULTIPLIER
                     if frequency > MAXIMUM_PWM_FREQUENCY:
-                        self.display.show("Err ")
+                        self.show_message("Error")
                         sleep(3)
                         return
                     if frequency < 10:
@@ -151,7 +175,7 @@ class PicoClock:
                         self.pwm_clock.freq(frequency)
                         self.pwm_clock.duty_u16(32512)
                     self.onboard_led.on()
-                    self.display.show("Run ")
+                    self.show_message("Run")
                     sleep(2)
                 else:
                     if debug: print("Clock stopped")
@@ -163,9 +187,8 @@ class PicoClock:
                         self.pwm_clock.duty_u16(0)
                         self.pwm_clock.deinit()
                     self.onboard_led.off()
-                    self.display.show("Stop")
+                    self.show_message("Stop")
                     sleep(2)
-                    self.display.number(self.clock_frequency)
             elif str(PIN_BUTTON_PULSE) in str(pin):
                 if debug: print("Pulse button pressed")
                 if self.clock_running:
@@ -185,8 +208,34 @@ class PicoClock:
         utime.sleep_us(half_period_us)
         self.pwm_clock.off()
 
+    def show_message(self,textstr):
+        self.display_oled(textstr,5,5,True)
+        self.display_oled("Frequency: " + str(self.clock_frequency),5,15,False)   
+
+    def display_oled(self,textstr,x,y,clear_display):
+        if clear_display: self.oled.fill(0)
+        self.oled.text(textstr,x,y)
+        self.oled.show()
+        
+    def set_frequency(self,freq):
+        self.clock_frequency = freq
+        self.show_message("set freq")
 
 if __name__ == "__main__":
     clock = PicoClock()
+
+    print("RUNNING");
+    
+    r = RotaryIRQ(pin_num_clk=12,pin_num_dt=13,min_val=0,reverse=False,range_mode=RotaryIRQ.RANGE_UNBOUNDED)  
+
+    val_old = r.value()
+
     while True:
+        # NEED TO STOP THE VALUE GOING BELOW 1 
+        val_new = r.value()
+        if val_old != val_new:
+            val_old = val_new
+            clock.set_frequency(val_new)
+            print('result =', val_new)
         sleep(1)
+
