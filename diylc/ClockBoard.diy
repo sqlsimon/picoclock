@@ -224,7 +224,7 @@
       <name>L3</name>
       <point x="6.72" y="3.19"/>
       <text>CLK</text>
-      <font name="CourierNewPS-BoldMT" size="15" style="1"/>
+      <font name="Dialog.bold" size="15" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -654,7 +654,7 @@
       <name>L7</name>
       <point x="6.615" y="3.285"/>
       <text>+</text>
-      <font name="CourierNewPS-BoldMT" size="15" style="1"/>
+      <font name="Dialog.bold" size="15" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -850,7 +850,7 @@
       <name>L10</name>
       <point x="0.28" y="-0.0325"/>
       <text>GND</text>
-      <font name="CourierNewPS-BoldMT" size="15" style="1"/>
+      <font name="Dialog.bold" size="15" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -942,7 +942,7 @@
       <cutBetweenHoles>false</cutBetweenHoles>
       <orientation>VERTICAL</orientation>
       <holeSpacing value="0.1" unit="in"/>
-      <point x="5.765" y="3.605"/>
+      <point x="5.84" y="3.595"/>
     </diylc.connectivity.TraceCut>
     <diylc.connectivity.Jumper>
       <name>J12</name>
@@ -1039,6 +1039,36 @@
       <hideShortLeads>false</hideShortLeads>
       <style>SOLID</style>
     </diylc.connectivity.Jumper>
+    <diylc.connectivity.TraceCut>
+      <name>Cut4</name>
+      <size value="0.08" unit="in"/>
+      <fillColor hex="ffffff"/>
+      <borderColor hex="ff0000"/>
+      <boardColor hex="f8ebb3"/>
+      <cutBetweenHoles>false</cutBetweenHoles>
+      <orientation>VERTICAL</orientation>
+      <holeSpacing value="0.1" unit="in"/>
+      <point x="5.85" y="3.395"/>
+    </diylc.connectivity.TraceCut>
+    <diylc.connectivity.Jumper>
+      <name>J8</name>
+      <alpha>127</alpha>
+      <points>
+        <point x="5.95" y="4.71"/>
+        <point x="5.95" y="3.4"/>
+        <point x="5.95" y="4.055"/>
+      </points>
+      <bodyColor hex="ffffff"/>
+      <borderColor hex="000000"/>
+      <labelColor hex="000000"/>
+      <leadColor hex="0000ff"/>
+      <display>NAME</display>
+      <flipStanding>false</flipStanding>
+      <labelOriantation>Directional</labelOriantation>
+      <moveLabel>false</moveLabel>
+      <hideShortLeads>false</hideShortLeads>
+      <style>SOLID</style>
+    </diylc.connectivity.Jumper>
     <diylc.semiconductors.LED>
       <name>D1</name>
       <alpha>127</alpha>
@@ -1089,7 +1119,7 @@
       <name>LAB1</name>
       <point x="6.653" y="3.1910000000000003"/>
       <text>GND</text>
-      <font name="Dialog" size="14" style="1"/>
+      <font name="Dialog.bold" size="14" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -1099,7 +1129,7 @@
       <name>LAB2</name>
       <point x="6.632000000000001" y="3.39"/>
       <text>SW</text>
-      <font name="Dialog" size="14" style="1"/>
+      <font name="Dialog.bold" size="14" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -1109,7 +1139,7 @@
       <name>LAB3</name>
       <point x="6.624" y="3.4929999999999994"/>
       <text>DT</text>
-      <font name="Dialog" size="14" style="1"/>
+      <font name="Dialog.bold" size="14" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -1119,7 +1149,7 @@
       <name>LAB4</name>
       <point x="6.64" y="3.5829999999999997"/>
       <text>CLK</text>
-      <font name="Dialog" size="14" style="1"/>
+      <font name="Dialog.bold" size="14" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -1129,7 +1159,7 @@
       <name>LAB5</name>
       <point x="4.935" y="5.297000000000001"/>
       <text>SDA</text>
-      <font name="Dialog" size="12" style="1"/>
+      <font name="Dialog.bold" size="12" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -1139,7 +1169,7 @@
       <name>LAB6</name>
       <point x="4.938" y="5.388999999999999"/>
       <text>SCL</text>
-      <font name="Dialog" size="12" style="1"/>
+      <font name="Dialog.bold" size="12" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -1149,7 +1179,7 @@
       <name>LAB7</name>
       <point x="4.954000000000001" y="5.5889999999999995"/>
       <text>GND</text>
-      <font name="Dialog" size="12" style="1"/>
+      <font name="Dialog.bold" size="12" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -1159,7 +1189,7 @@
       <name>LAB8</name>
       <point x="4.437105894705265" y="6.064489275536224"/>
       <text>+VE</text>
-      <font name="Dialog" size="14" style="1"/>
+      <font name="Dialog.bold" size="14" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -1169,7 +1199,7 @@
       <name>LAB9</name>
       <point x="4.464616019199041" y="2.2297052647367637"/>
       <text>-VE</text>
-      <font name="Dialog" size="14" style="1"/>
+      <font name="Dialog.bold" size="14" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -1179,7 +1209,7 @@
       <name>LAB10</name>
       <point x="4.095" y="2.92"/>
       <text>CLK OUTPUT</text>
-      <font name="Dialog" size="14" style="1"/>
+      <font name="Dialog.bold" size="14" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -1189,7 +1219,7 @@
       <name>LAB11</name>
       <point x="4.24" y="3.12"/>
       <text>GND</text>
-      <font name="Dialog" size="14" style="1"/>
+      <font name="Dialog.bold" size="14" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -1199,7 +1229,7 @@
       <name>LAB12</name>
       <point x="4.245" y="3.02"/>
       <text>+VE</text>
-      <font name="Dialog" size="14" style="1"/>
+      <font name="Dialog.bold" size="14" style="1"/>
       <color hex="000000"/>
       <horizontalAlignment>CENTER</horizontalAlignment>
       <verticalAlignment>CENTER</verticalAlignment>
@@ -1209,32 +1239,32 @@
   <groups>
     <set/>
     <set>
-      <diylc.shapes.Rectangle reference="../../../components/diylc.shapes.Rectangle[2]"/>
+      <diylc.misc.Label reference="../../../components/diylc.misc.Label"/>
+      <diylc.misc.PCBText reference="../../../components/diylc.misc.PCBText"/>
+      <diylc.misc.Label reference="../../../components/diylc.misc.Label[2]"/>
+      <diylc.shapes.Ellipse reference="../../../components/diylc.shapes.Ellipse[2]"/>
+      <diylc.shapes.Rectangle reference="../../../components/diylc.shapes.Rectangle"/>
+      <diylc.misc.Label reference="../../../components/diylc.misc.Label[4]"/>
+      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[4]"/>
+      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[3]"/>
+      <diylc.misc.PCBText reference="../../../components/diylc.misc.PCBText[2]"/>
+      <diylc.shapes.Ellipse reference="../../../components/diylc.shapes.Ellipse"/>
+      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[2]"/>
+      <diylc.misc.Label reference="../../../components/diylc.misc.Label[3]"/>
+      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[5]"/>
+      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line"/>
+    </set>
+    <set>
+      <diylc.misc.Label reference="../../../components/diylc.misc.Label[6]"/>
+      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[6]"/>
       <diylc.misc.PCBText reference="../../../components/diylc.misc.PCBText[3]"/>
+      <diylc.misc.Label reference="../../../components/diylc.misc.Label[7]"/>
+      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[7]"/>
+      <diylc.shapes.Rectangle reference="../../../components/diylc.shapes.Rectangle[2]"/>
       <diylc.shapes.Rectangle reference="../../../components/diylc.shapes.Rectangle[3]"/>
       <diylc.misc.Label reference="../../../components/diylc.misc.Label[5]"/>
       <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[8]"/>
       <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[9]"/>
-      <diylc.misc.Label reference="../../../components/diylc.misc.Label[6]"/>
-      <diylc.misc.Label reference="../../../components/diylc.misc.Label[7]"/>
-      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[6]"/>
-      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[7]"/>
-    </set>
-    <set>
-      <diylc.misc.PCBText reference="../../../components/diylc.misc.PCBText"/>
-      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[2]"/>
-      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line"/>
-      <diylc.shapes.Ellipse reference="../../../components/diylc.shapes.Ellipse"/>
-      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[5]"/>
-      <diylc.misc.Label reference="../../../components/diylc.misc.Label[2]"/>
-      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[4]"/>
-      <diylc.misc.Label reference="../../../components/diylc.misc.Label"/>
-      <diylc.misc.Label reference="../../../components/diylc.misc.Label[4]"/>
-      <diylc.misc.Label reference="../../../components/diylc.misc.Label[3]"/>
-      <diylc.connectivity.Line reference="../../../components/diylc.connectivity.Line[3]"/>
-      <diylc.misc.PCBText reference="../../../components/diylc.misc.PCBText[2]"/>
-      <diylc.shapes.Rectangle reference="../../../components/diylc.shapes.Rectangle"/>
-      <diylc.shapes.Ellipse reference="../../../components/diylc.shapes.Ellipse[2]"/>
     </set>
   </groups>
   <lockedLayers/>
@@ -1242,5 +1272,5 @@
     <diylc.boards.VeroBoard reference="../../components/diylc.boards.VeroBoard"/>
   </lockedComponents>
   <hiddenLayers/>
-  <font name="Dialog" size="14" style="0"/>
+  <font name="Dialog.plain" size="14" style="0"/>
 </project>

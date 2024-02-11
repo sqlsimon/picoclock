@@ -8,17 +8,18 @@ import framebuf,sys
 version__ = "0.1.0"
 debug= True  # Set to False to disable debug messages via the serial port
 
-# GPIO pin mapping
+# GPIO pin mapping 
 PIN_CLOCK = 0
 PIN_BUTTON_RESET = 16
-PIN_BUTTON_CYCLE = 17
 PIN_BUTTON_SHIFT = 18
-PIN_BUTTON_SET = 19
+PIN_BUTTON_SET = 17
 PIN_BUTTON_START_STOP = 20
 PIN_BUTTON_PULSE = 21
 PIN_LED = 25
-PIN_DISPLAY_CLK = 2
-PIN_DISPLAY_DIO = 3
+PIN_I2C_SDA = 6 # OLED DISPLAY
+PIN_I2C_SCL = 7 # OLED DISPLAY
+PIN_ROTARY_CLK = 22
+PIN_ROTARY_DT = 28 
 
 # Debounce delay in milliseconds
 DEBOUNCE_DELAY = 500
@@ -50,7 +51,6 @@ class PicoClock:
         # Initialize Pico GPIO pins
         self.pwm_clock = Pin(PIN_CLOCK, Pin.OUT)
         self.button_reset = Pin(PIN_BUTTON_RESET, Pin.IN, Pin.PULL_DOWN)
-        self.button_cycle = Pin(PIN_BUTTON_CYCLE, Pin.IN, Pin.PULL_DOWN)
         self.button_shift = Pin(PIN_BUTTON_SHIFT, Pin.IN, Pin.PULL_DOWN)
         self.button_set = Pin(PIN_BUTTON_SET, Pin.IN, Pin.PULL_DOWN)
         self.button_start_stop = Pin(PIN_BUTTON_START_STOP, Pin.IN, Pin.PULL_DOWN)
@@ -59,7 +59,6 @@ class PicoClock:
 
         # Initialize Interrupts handlers
         self.button_reset.irq(trigger=Pin.IRQ_RISING, handler=self.button_pressed_handler)
-        self.button_cycle.irq(trigger=Pin.IRQ_RISING, handler=self.button_pressed_handler)
         self.button_shift.irq(trigger=Pin.IRQ_RISING, handler=self.button_pressed_handler)
         self.button_set.irq(trigger=Pin.IRQ_RISING, handler=self.button_pressed_handler)
         self.button_start_stop.irq(trigger=Pin.IRQ_RISING, handler=self.button_pressed_handler)
@@ -71,7 +70,7 @@ class PicoClock:
         pix_res_x  = 128 # SSD1306 horizontal resolution
         pix_res_y  = 32  # SSD1306 vertical resolution
 
-        i2c_dev = I2C(1,scl=Pin(27),sda=Pin(26),freq=200000)  # start I2C on I2C1 (GPIO 26/27)
+        i2c_dev = I2C(1,scl=Pin(PIN_I2C_SCL),sda=Pin(PIN_I2C_SDA),freq=200000)  # start I2C on I2C1 (GPIO 26/27)
         i2c_addr = [hex(ii) for ii in i2c_dev.scan()] # get I2C address in hex format
         
         # i2c address = 0x3c
@@ -104,22 +103,6 @@ class PicoClock:
                     self.show_message("Reset")
                     sleep(2)
                     self.onboard_led.off()
-            elif str(PIN_BUTTON_CYCLE) in str(pin):
-                if debug: print("Cycle button pressed")
-                frequency = self.clock_frequency * DEFAULT_CLOCK_MULTIPLIER
-                if frequency > MAXIMUM_PWM_FREQUENCY:
-                    self.show_message("Error")
-                    sleep(3)
-                    return
-                if self.clock_running:
-                    if debug: print("Can't cycle while clock is running")
-                else:
-                    digit = int(str(self.clock_frequency)[-1])
-                    digit += 1
-                    if digit >= 10:
-                        digit = 1
-                    self.clock_frequency = int(str(self.clock_frequency)[:-1] + str(digit))
-                    self.show_message("Cycle")
             elif str(PIN_BUTTON_SHIFT) in str(pin):
                 if debug: print("Shift button pressed")
                 frequency = self.clock_frequency * DEFAULT_CLOCK_MULTIPLIER
@@ -226,7 +209,7 @@ if __name__ == "__main__":
 
     print("RUNNING");
     
-    r = RotaryIRQ(pin_num_clk=12,pin_num_dt=13,min_val=0,reverse=False,range_mode=RotaryIRQ.RANGE_UNBOUNDED)  
+    r = RotaryIRQ(pin_num_clk=PIN_ROTARY_CLK,pin_num_dt=PIN_ROTARY_DT,min_val=0,reverse=False,range_mode=RotaryIRQ.RANGE_UNBOUNDED)  
 
     val_old = r.value()
 
